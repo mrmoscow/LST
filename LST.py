@@ -52,7 +52,58 @@ def dectohms(dec):
    ss = int(ss)
    return [hh,mm,ss]
 
+
 def CaltoJD(year=0,month=0,day=0,hour=0,minute=0,second=0,now=""):
+#https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
+    DUT1=-0.098 #2022,May,20.
+    if now == "now":
+       utcn=datetime.datetime.utcnow()
+       year=utcn.year
+       month=utcn.month
+       day=utcn.day
+       hour=utcn.hour
+       minute=utcn.minute
+       second=utcn.second+DUT1
+    ut=float(hour)+float(minute)/60.+float(second)/3600.
+    if (month == 1) or (month == 2):
+        year=year-1
+        month=month+12
+    A=int(year/100)
+    B=int(A/4)
+    JD=2-A+B+day+int(365.25*(year+4716))+int(30.6001*(month+1))-1524.5+(ut/24.0)
+    return JD
+
+def julday(year,month,day, hour=0, minute=0, second=0):
+    """
+    Julian date from month, day, and year.
+    Adapted from "Numerical Recipes in C', 2nd edition, pp. 11
+    Parameters
+    ----------
+    month : numpy.ndarray or int32 Month.
+    day : numpy.ndarray or int32   Day.
+    year : numpy.ndarray or int32  Year.
+    hour : numpy.ndarray or int32, optional Hour.
+    minute : numpy.ndarray or int32, optional  Minute.
+    second : numpy.ndarray or int32, optional   Second.
+    Returns
+    -------
+    jd : numpy.ndarray or float64         Julian day.
+    """
+    month = np.array(month)
+    day = np.array(day)
+    in_jan_feb = month <= 2
+    jy = year - in_jan_feb
+    jm = month + 1 + in_jan_feb * 12
+    jd = np.int32(np.floor(365.25 * jy) +
+                  np.floor(30.6001 * jm) + (day + 1720995.0))
+    ja = np.int32(0.01 * jy)
+    jd += 2 - ja + np.int32(0.25 * ja)
+    jd = jd + hour / 24.0 - 0.5 + minute / 1440.0 + second / 86400.0
+    return jd
+
+
+##Next JD  have issue on 1800,1900,2100,2200,2300,betwen Feb 28, March 1.  don't using it. 
+def JD_O(year=0,month=0,day=0,hour=0,minute=0,second=0,now=""):
     #DUT1=-0.153  #2019,Sep,30
     #DUT1=-0.09952 #2022,Mar,18 UT1-UTC(sec).
     DUT1=-0.098 #2022,May,20.
@@ -67,7 +118,6 @@ def CaltoJD(year=0,month=0,day=0,hour=0,minute=0,second=0,now=""):
     ut=float(hour)+float(minute)/60.+float(second)/3600.
     JD = (367*year) - int((7*(year+int((month+9)/12)))/4)+int((275*month)/9)+day + 1721013.5 + (ut/24)
     return JD
-
 
 def getLST2(LAT,LON,JD):
     GMST = 18.697374558 + 24.06570982441908*(JD - 2451545)
