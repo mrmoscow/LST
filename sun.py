@@ -12,6 +12,7 @@ LAT=LST.dmstodec(19,49,27)
 LON=LST.dmstodec(155,28,41,"W")
 timezone=-10
 
+#esample
 #Loation  of Lulin
 #LAT=LST.dmstodec(23,28,9,"N")
 #LON=LST.dmstodec(120,52,22,"E")
