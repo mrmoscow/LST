@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import csv
-import LST2 as LST
+import LST as LST
 
 
 LAT=LST.dmstodec(19,49,27)

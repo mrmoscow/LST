@@ -196,3 +196,36 @@ def SunRaDec(JD):
     Declination =np.arcsin( np.sin( EclipticObliquity )* Sin_EclipticLongitude)
     #return RA in 24 hours(*180/pi*24/360), Dec in Degree
     return RightAscension*12/np.pi,Declination*180/np.pi
+
+
+class JD():
+    def __init__(self,year=0,month=0,day=0,hour=0,mins=0,sec=0,now=""):
+        if now == "now":
+            utcn=datetime.datetime.utcnow()
+            year=utcn.year
+            month=utcn.month
+            day=utcn.day
+            hour=utcn.hour
+            mins=utcn.minute
+            sec=utcn.second+DUT1
+        self.year = int(year)
+        self.month = int(month)
+        self.day = int(day)
+        self.hour = int (hour)
+        self.mins = int (mins)
+        self.sec = float (sec)
+        self.JD=LST.CaltoJD(year,month,day,hour,mins,sec)
+        print (year,month,day,hour,mins,sec,'JD=',self.JD)
+        self.nighList=np.linspace(self.JD-1,self.JD+1,500)
+        self.yearList=np.zeros(shape=(11,500))
+        for i in range(11) :
+            year2=year
+            month2=month+i-5
+            if (month+i-5) <=0:
+                year2=year-1
+                month2=month+i-5+12
+            elif (month+i-5)>12:
+                year2= year+1
+                month2=month+i-5-12
+            JD2=LST.CaltoJD(year2,month2,1,0,0,0)
+            self.yearList[i,:]=np.linspace(JD2-1,JD2+1,500)
